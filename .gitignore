@@ -216,3 +216,35 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ============================================================================
+# Geocodificador de Oportunidades · reglas propias del proyecto
+# ============================================================================
+
+# --- Datos: se regeneran con los notebooks del curso, NUNCA al repo ---
+# geocoder_mexico_completo.parquet pesa 886 MB e integrado_ne.parquet 1.6 GB;
+# GitHub rechaza archivos de mas de 100 MB.
+*.parquet
+*.gpkg
+*.csv
+data/
+spark-warehouse/
+metastore_db/
+derby.log
+
+# --- Frontend ---
+node_modules/
+frontend/dist/
+backend/static/
+.vite/
+*.local
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+._*
+
+# --- Editores ---
+.vscode/
+.idea/
+*.swp
