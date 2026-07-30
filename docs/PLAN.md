@@ -3,7 +3,9 @@
 Documento de trabajo para construir una segunda versión del proyecto como
 repositorio independiente, con backend Python y frontend React.
 
-Este documento vive en `docs/PLAN.md`.
+> **Estado: las cinco fases están completas.** Este documento se conserva como
+> registro de las decisiones y de por qué se tomaron. El README describe cómo
+> usar el resultado.
 
 ---
 
@@ -185,7 +187,7 @@ correspondiente con `{"error": "..."}` y un mensaje accionable, igual que la v1.
 
 ## 5. Fases
 
-### Fase 0 · Andamiaje del repositorio — 1.5 h
+### ✅ Fase 0 · Andamiaje del repositorio — 1.5 h
 
 1. Clonar el repo creado en GitHub con template `.gitignore` de Python.
 2. **Antes de crear nada**, ampliar el `.gitignore` con los bloques de datos,
@@ -201,7 +203,7 @@ comparando fechas de modificación).
 
 ---
 
-### Fase 1 · Backend Flask — 3 h
+### ✅ Fase 1 · Backend Flask — 3 h
 
 1. `requirements.txt`: `flask`, `flask-cors`, `elasticsearch`, `requests`.
 2. `scoring.py`: `interpretar_confianza` con tres niveles (cortes 85 y 70),
@@ -218,7 +220,7 @@ no-JSON, campos faltantes, expiración) siguen dando mensajes accionables.
 
 ---
 
-### Fase 2 · Frontend funcional — 7–9 h
+### ✅ Fase 2 · Frontend funcional — 7–9 h
 
 Sin diseño todavía: primero que funcione.
 
@@ -240,7 +242,7 @@ Sin diseño todavía: primero que funcione.
 
 ---
 
-### Fase 3 · Diseño y responsividad — 5–6 h
+### ✅ Fase 3 · Diseño y responsividad — 5–6 h
 
 1. Tokens de color de la sección 2 en `tailwind.config.js` y `colores.js`.
 2. Barra superior azul marino con los dos semáforos de servicios.
@@ -257,7 +259,7 @@ icono sobre cada pin supera 3:1 de contraste.
 
 ---
 
-### Fase 4 · Arranque y acceso desde el teléfono — 2–3 h
+### ✅ Fase 4 · Arranque y acceso desde el teléfono — 2–3 h
 
 1. Instalar Node 20 LTS. **No viene en la distribución Portable del laboratorio.**
 2. `vite build` con salida a `backend/static/`; Flask la sirve con
@@ -274,7 +276,7 @@ la búsqueda y la predicción funcionan.
 
 ---
 
-### Fase 5 · Pruebas y documentación — 3 h
+### ✅ Fase 5 · Pruebas y documentación — 3 h
 
 1. Copiar las suites de la v1 que siguen aplicando (`es_client`, `ml_api`,
    umbrales) y adaptarlas a los tres niveles.
@@ -333,7 +335,28 @@ distintos.
 
 ---
 
-## 8. Antes de empezar la Fase 0
+## 8. Diferencias con lo planeado
+
+Lo que cambió durante la implementación, y por qué:
+
+- **9 archivos en el frontend en vez de 7.** `formato.js` e `historial.js` se
+  fusionaron en `lib.js` como estaba previsto, pero el diseño pidió `colores.js`
+  y `HojaMovil.jsx`. `App.jsx` llegó a 265 líneas.
+- **`api.py` llegó a 244 líneas**, por las rutas de estáticos y el bloque de
+  arranque que anuncia la IP local.
+- **Sin Vitest.** Las pruebas del frontend usan `node:assert` y se ejecutan con
+  `node` a secas: una dependencia menos y el mismo resultado.
+- **Se añadieron dos suites no previstas**: `test_estaticos.py`, porque servir
+  el frontend desde Flask puede tapar las rutas `/api` en silencio, y
+  `test_coherencia.mjs`, para comprobar que Python y JavaScript redondean las
+  coordenadas igual.
+- **Un bug encontrado por las pruebas**: `ml_api.salud()` y `predecir()` tenían
+  `config.API_URL` como valor por defecto, que Python evalúa al importar. Ahora
+  `api.py` pasa la URL explícitamente.
+
+---
+
+## 9. Antes de empezar la Fase 0
 
 - [ ] Repo creado en GitHub, privado, con `.gitignore` de Python
 - [ ] Clonado en local y ruta compartida para poder trabajar en él

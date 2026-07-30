@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="470" viewBox="0 0 1140 470" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="8.5" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#185FA5"/>
+    </marker>
+    <marker id="as" markerWidth="9" markerHeight="9" refX="0.5" refY="4.5" orient="auto">
+      <path d="M9,0 L0,4.5 L9,9 z" fill="#185FA5"/>
+    </marker>
+    <marker id="g" markerWidth="9" markerHeight="9" refX="8.5" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#8a8a8a"/>
+    </marker>
+  </defs>
+
+  <rect width="1140" height="470" fill="#ffffff"/>
+
+  <text x="26" y="30" font-size="16" font-weight="bold" fill="#042C53">Geocodificador de Oportunidades · arquitectura</text>
+  <text x="26" y="50" font-size="13" fill="#8a8a8a">Un solo puerto sirve la interfaz y la API; los servicios del laboratorio no se modifican.</text>
+
+  <!-- clientes -->
+  <rect x="26" y="118" width="126" height="42" rx="6" fill="#ffffff" stroke="#8a8a8a" stroke-width="1.5"/>
+  <text x="89" y="144" font-size="14" fill="#4a4a4a" text-anchor="middle">Navegador</text>
+
+  <rect x="26" y="176" width="126" height="42" rx="6" fill="#ffffff" stroke="#8a8a8a" stroke-width="1.5"/>
+  <text x="89" y="202" font-size="14" fill="#4a4a4a" text-anchor="middle">Teléfono</text>
+  <text x="89" y="238" font-size="11" fill="#8a8a8a" text-anchor="middle">misma red Wi-Fi</text>
+
+  <line x1="152" y1="139" x2="214" y2="139" stroke="#8a8a8a" stroke-width="1.6" marker-end="url(#g)"/>
+  <line x1="152" y1="197" x2="214" y2="197" stroke="#8a8a8a" stroke-width="1.6" marker-end="url(#g)"/>
+
+  <!-- servidor unificado -->
+  <rect x="220" y="96" width="248" height="146" rx="8" fill="#EEF3F9" stroke="#185FA5" stroke-width="2"/>
+  <text x="344" y="124" font-size="16" font-weight="bold" fill="#042C53" text-anchor="middle">Flask · api.py</text>
+  <line x1="240" y1="136" x2="448" y2="136" stroke="#B5D4F4" stroke-width="1"/>
+  <text x="344" y="156" font-size="13" fill="#4a4a4a" text-anchor="middle">4 rutas /api/…</text>
+  <text x="344" y="176" font-size="13" fill="#4a4a4a" text-anchor="middle">static/ → React + Leaflet</text>
+  <text x="344" y="199" font-size="12" fill="#4a4a4a" text-anchor="middle">caché de predicciones</text>
+  <text x="344" y="224" font-size="12" fill="#8a8a8a" text-anchor="middle">0.0.0.0:8000</text>
+
+  <!-- elasticsearch -->
+  <rect x="556" y="60" width="272" height="112" rx="8" fill="#F7F9FC" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="692" y="88" font-size="15" font-weight="bold" fill="#042C53" text-anchor="middle">Elasticsearch</text>
+  <text x="692" y="111" font-size="13" fill="#4a4a4a" text-anchor="middle">índice geocoder_mexico</text>
+  <text x="692" y="132" font-size="12" fill="#4a4a4a" text-anchor="middle">33.6 M domicilios · geo_point</text>
+  <text x="692" y="154" font-size="12" fill="#8a8a8a" text-anchor="middle">localhost:9200</text>
+
+  <path d="M468 140 H512 V116 H550" fill="none" stroke="#185FA5" stroke-width="2" marker-end="url(#a)" marker-start="url(#as)"/>
+  <text x="512" y="72" font-size="12" fill="#185FA5" text-anchor="middle">multi_match</text>
+  <text x="512" y="90" font-size="12" fill="#185FA5" text-anchor="middle">_geo_distance</text>
+
+  <!-- api spark -->
+  <rect x="556" y="240" width="272" height="112" rx="8" fill="#F7F9FC" stroke="#185FA5" stroke-width="1.8"/>
+  <text x="692" y="268" font-size="15" font-weight="bold" fill="#042C53" text-anchor="middle">API de Spark</text>
+  <text x="692" y="291" font-size="13" fill="#4a4a4a" text-anchor="middle">05_api.py · Flask + PySpark</text>
+  <text x="692" y="312" font-size="12" fill="#4a4a4a" text-anchor="middle">modelo GBT · Apache Sedona</text>
+  <text x="692" y="334" font-size="12" fill="#8a8a8a" text-anchor="middle">localhost:5001</text>
+
+  <path d="M344 248 V296 H550" fill="none" stroke="#185FA5" stroke-width="2" marker-end="url(#a)" marker-start="url(#as)"/>
+  <text x="452" y="278" font-size="12" fill="#185FA5" text-anchor="middle">POST /predict</text>
+  <text x="452" y="292" font-size="11" fill="#185FA5" text-anchor="middle">{lat, lon}</text>
+
+  <!-- hdfs -->
+  <rect x="878" y="250" width="236" height="92" rx="8" fill="#ffffff" stroke="#8a8a8a" stroke-width="1.5"/>
+  <text x="996" y="278" font-size="15" font-weight="bold" fill="#4a4a4a" text-anchor="middle">HDFS</text>
+  <text x="996" y="300" font-size="12" fill="#4a4a4a" text-anchor="middle">DENUE · Censo 2020</text>
+  <text x="996" y="320" font-size="12" fill="#4a4a4a" text-anchor="middle">gbt_oxxo_model</text>
+  <text x="996" y="336" font-size="11" fill="#8a8a8a" text-anchor="middle">localhost:9000</text>
+  <line x1="828" y1="296" x2="872" y2="296" stroke="#8a8a8a" stroke-width="1.6" marker-end="url(#g)"/>
+
+  <!-- separacion de responsabilidades -->
+  <line x1="536" y1="392" x2="1114" y2="392" stroke="#e2e2e2" stroke-width="1"/>
+  <rect x="556" y="372" width="12" height="12" rx="2" fill="#EEF3F9" stroke="#185FA5" stroke-width="1.5"/>
+  <text x="578" y="383" font-size="12" fill="#4a4a4a">Este repositorio</text>
+  <rect x="700" y="372" width="12" height="12" rx="2" fill="#ffffff" stroke="#8a8a8a" stroke-width="1.5"/>
+  <text x="722" y="383" font-size="12" fill="#4a4a4a">Laboratorio del curso (sin modificar)</text>
+
+  <text x="26" y="446" font-size="11" fill="#8a8a8a">Si la API de Spark está caída, la geocodificación sigue funcionando: solo se deshabilita el análisis de potencial.</text>
+  <text x="26" y="462" font-size="11" fill="#8a8a8a">Laboratorio Big Data · vía Portable (macOS Apple Silicon) · Spark 3.4 · Scala 2.12</text>
+</svg>

@@ -244,6 +244,12 @@ backend/static/
 .AppleDouble
 ._*
 
+# --- Entorno virtual de Python ---
+# El template ya cubre .venv; se anaden las variantes sin punto.
+venv/
+env/
+ENV/
+
 # --- Editores ---
 .vscode/
 .idea/
