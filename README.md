@@ -60,6 +60,8 @@ a `backend/static/` y Flask lo sirve, así que **todo corre en un solo puerto**.
 | `GET /api/reverse?lat=…&lon=…` | Coordenadas → direcciones más cercanas |
 | `POST /api/predict` | Coordenadas → potencial de negocio |
 
+[Demo](https://youtu.be/SUpSFx_m6Fw?si=BaQHid0W_AHbf71F)
+
 ---
 
 ## Cómo levantarlo

@@ -9,7 +9,6 @@
 // traduce a color. Asi los umbrales viven en un unico sitio.
 //
 // ---------------------------------------------------------------------------
-// ARMONIA
 //
 // Todo parte del azul #4777B4 (H214 S43 L49). Los tres niveles conservan sus
 // tonos originales -verde, ambar, coral- pero se generaron desde HSL con una
