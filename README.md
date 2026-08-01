@@ -250,9 +250,8 @@ cuadernos.
 ## Relación con la versión 1
 
 Existe una primera versión construida con **Streamlit**, el framework recomendado
-en el enunciado del proyecto. **Esta versión 2 es la que se entrega**: separa el
-backend del frontend, rediseña la interfaz y funciona desde el teléfono. El
-enunciado admite Flask de forma explícita como alternativa.
+en el curso. **Esta versión 2 es la que se entrega**: separa el
+backend del frontend, rediseña la interfaz y funciona desde el teléfono.
 
 La versión 1 **permanece intacta** en el laboratorio, como referencia. Ambas
 comparten los mismos servicios y pueden convivir.
