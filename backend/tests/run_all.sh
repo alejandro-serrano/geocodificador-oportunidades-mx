@@ -27,8 +27,8 @@ echo "════ Backend · servidor unificado ════"
 
 echo
 if [ "$fallos" -eq 0 ]; then
-  echo "✅ Todas las pruebas pasaron."
+  echo "Todas las pruebas pasaron."
 else
-  echo "❌ $fallos archivo(s) de prueba con fallos."
+  echo "$fallos archivo(s) de prueba con fallos."
   exit 1
 fi

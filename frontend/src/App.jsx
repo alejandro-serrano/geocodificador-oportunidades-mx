@@ -1,21 +1,50 @@
 import { useEffect, useState } from 'react'
 import * as api from './api.js'
 import { registrar } from './lib.js'
-import { MARINO, MARINO_CLARO } from './colores.js'
+import { MARINO, MARINO_CLARO, TEAL_CLARO, ACENTO } from './colores.js'
 import Mapa, { CENTRO_MEXICO, ZOOM_MEXICO, ZOOM_RESULTADO } from './Mapa.jsx'
 import Panel from './Panel.jsx'
 import HojaMovil from './HojaMovil.jsx'
 
 const VECINOS_POR_CLIC = 3
 
+// Estado de un servicio, como pildora traslucida sobre la cabecera.
 function Semaforo({ ok, etiqueta, detalle }) {
+  const color = ok ? '#3FAB87' : '#D26B60'
   return (
-    <span className="flex items-center gap-1.5" title={detalle}>
+    <span
+      className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold"
+      style={{
+        backgroundColor: 'rgba(255,255,255,.08)',
+        border: '1px solid rgba(255,255,255,.14)',
+        color: '#DCE6F5',
+      }}
+      title={detalle}
+    >
       <span
-        className="h-1.5 w-1.5 rounded-full"
-        style={{ backgroundColor: ok ? '#5DCAA5' : '#F0997B' }}
+        className="h-[7px] w-[7px] shrink-0 rounded-full"
+        style={{ backgroundColor: color, boxShadow: `0 0 0 3px ${color}40` }}
       />
-      <span style={{ color: ok ? MARINO_CLARO : '#F5C4B3' }}>{etiqueta}</span>
+      {etiqueta}
+    </span>
+  )
+}
+
+// Marca: el pin dentro de un cuadrado redondeado con degradado.
+function Marca() {
+  return (
+    <span
+      className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-xl"
+      style={{
+        background: `linear-gradient(135deg, ${TEAL_CLARO}, ${ACENTO})`,
+        boxShadow: `0 4px 10px ${TEAL_CLARO}55`,
+      }}
+      aria-hidden="true"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8Z" stroke="#fff" strokeWidth="1.8" />
+        <circle cx="12" cy="10" r="2.6" fill="#fff" />
+      </svg>
     </span>
   )
 }
@@ -82,6 +111,20 @@ export default function App() {
     }
   }
 
+  // Elegir una direccion la copia al campo de busqueda.
+  //
+  // Sin esto el campo conserva lo que se escribio antes y contradice a la ficha
+  // de abajo: tocas el mapa, eliges una de las tres cercanas, y arriba se sigue
+  // leyendo otra direccion distinta de la que se va a analizar.
+  //
+  // Se separa de seleccionar() a proposito: la busqueda por texto NO pasa por
+  // aqui. Ahi el campo debe conservar lo que el usuario escribio, para poder
+  // corregirlo sin volver a teclearlo entero.
+  function elegir(direccion, recentrar) {
+    setTexto(direccion.direccion_completa)
+    seleccionar(direccion, recentrar)
+  }
+
   // --- Busqueda por texto -----------------------------------------------------
   async function buscar() {
     if (!texto.trim()) {
@@ -123,8 +166,14 @@ export default function App() {
       }
       // La mas cercana queda seleccionada, pero NO se recentra: el usuario ya
       // esta mirando esa zona y un salto de camara resultaria desorientador.
-      if (datos.resultados.length > 0) seleccionar(datos.resultados[0], false)
-      else setError('No se encontraron direcciones cercanas.')
+      if (datos.resultados.length > 0) {
+        elegir(datos.resultados[0], false)
+      } else {
+        // Sin resultados el campo se vacia: dejar la busqueda anterior seria
+        // afirmar que esa direccion es la del punto que se acaba de tocar.
+        setTexto('')
+        setError('No se encontraron direcciones cercanas.')
+      }
     } catch (e) {
       setError(e.message)
     } finally {
@@ -167,6 +216,7 @@ export default function App() {
     setZoom(ZOOM_RESULTADO)
     setPuntoClic(null)
     setVecinos([])
+    setTexto(entrada.direccion)
     setSeleccion({
       direccion_completa: entrada.direccion,
       municipio: entrada.municipio,
@@ -205,7 +255,7 @@ export default function App() {
       errorPrediccion={errorPrediccion}
       apiDisponible={apiOk}
       historial={historial}
-      alSeleccionar={seleccionar}
+      alSeleccionar={elegir}
       alAnalizar={analizar}
       alLimpiarHistorial={() => setHistorial([])}
       alIrAHistorial={irAHistorial}
@@ -215,14 +265,22 @@ export default function App() {
   return (
     <div className="flex h-full flex-col">
       <header
-        className="flex shrink-0 items-center gap-3 px-3 py-2 text-[13px]"
-        style={{ backgroundColor: MARINO }}
+        className="z-[500] flex shrink-0 flex-wrap items-center justify-between gap-3 px-6 py-4"
+        style={{
+          background: `linear-gradient(120deg, #111B33 0%, ${MARINO} 55%, #2A4C78 100%)`,
+          boxShadow: 'var(--sombra-md)',
+        }}
       >
-        <span className="font-medium text-white">Geocodificador</span>
-        <span className="hidden text-[12px] sm:inline" style={{ color: MARINO_CLARO }}>
-          Oportunidades de negocio · México
+        <span className="flex items-center gap-3.5">
+          <Marca />
+          <span className="flex flex-col">
+            <span className="titulo text-[19px] leading-tight text-white">Geocodificador</span>
+            <span className="text-[13px] font-medium" style={{ color: MARINO_CLARO }}>
+              Oportunidades de negocio · México
+            </span>
+          </span>
         </span>
-        <span className="ml-auto flex items-center gap-3 text-[11px]">
+        <span className="flex items-center gap-2.5">
           <Semaforo
             ok={esOk}
             etiqueta={esOk ? 'Índice listo' : 'Sin índice'}
@@ -238,7 +296,7 @@ export default function App() {
 
       <div className="relative flex min-h-0 flex-1">
         {/* Escritorio: panel fijo a la izquierda */}
-        <aside className="hidden w-[360px] shrink-0 border-r border-slate-200 bg-white md:block">
+        <aside className="hidden w-[420px] shrink-0 border-r border-[#E3E8F0] bg-white md:block">
           {panel}
         </aside>
 

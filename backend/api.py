@@ -18,6 +18,7 @@ Arrancar con:
 """
 import os
 import socket
+import subprocess
 import time
 from functools import lru_cache
 
@@ -206,8 +207,8 @@ def inicio():
 # =============================================================================
 # Arranque
 # =============================================================================
-def ip_local():
-    """IP del Mac en la red local, para poder abrir la app desde el teléfono.
+def ip_de_salida():
+    """La IP de la interfaz por la que sale el tráfico hacia internet.
 
     Se abre un socket UDP hacia una dirección externa: no envía ni un byte,
     solo obliga al sistema a elegir la interfaz de salida y así revelar su IP.
@@ -223,6 +224,35 @@ def ip_local():
         s.close()
 
 
+def ips_locales():
+    """TODAS las direcciones IPv4 de la máquina, sin loopback ni link-local.
+
+    Con una sola interfaz bastaría ip_de_salida(). Pero un Mac con Ethernet y
+    Wi-Fi a la vez, o con Compartir Internet activado, tiene varias — y solo
+    una de ellas lleva al teléfono. Anunciar una sola manda al usuario a
+    probar la equivocada, que es justo lo que pasó.
+    """
+    encontradas = []
+    try:
+        salida = subprocess.run(
+            ["ifconfig"], capture_output=True, text=True, timeout=3
+        ).stdout
+        for linea in salida.splitlines():
+            partes = linea.strip().split()
+            if len(partes) >= 2 and partes[0] == "inet":
+                ip = partes[1]
+                # 127.x es la propia máquina; 169.254.x es una red sin DHCP.
+                if not ip.startswith(("127.", "169.254.")):
+                    encontradas.append(ip)
+    except (OSError, subprocess.SubprocessError):
+        pass  # sin ifconfig se cae con elegancia a la de salida
+
+    principal = ip_de_salida()
+    if principal and principal not in encontradas:
+        encontradas.insert(0, principal)
+    return encontradas
+
+
 if __name__ == "__main__":
     print("=" * 62)
     print("  Geocodificador de Oportunidades · API")
@@ -235,10 +265,19 @@ if __name__ == "__main__":
         print("      Ejecuta 'npm run build' dentro de frontend/.")
 
     print(f"\n  En esta computadora : http://localhost:{config.PORT}")
-    ip = ip_local()
-    if ip:
-        print(f"  Desde el teléfono   : http://{ip}:{config.PORT}")
-        print("      (misma red Wi-Fi; macOS puede pedir permiso del firewall)")
+
+    ips = ips_locales()
+    principal = ip_de_salida()
+    if ips:
+        print("\n  Desde el teléfono, prueba:")
+        for ip in ips:
+            marca = "   ← la más probable" if ip == principal else ""
+            print(f"      http://{ip}:{config.PORT}{marca}")
+        if len(ips) > 1:
+            print("\n  Tienes varias redes. Usa la que empiece igual que la IP del")
+            print("  teléfono: Ajustes → Wi-Fi → tu red → dirección IP.")
+        print("\n  Si no carga, abre primero /api/health en el teléfono: si")
+        print("  responde con texto JSON, la red va bien.")
     print("=" * 62)
 
     app.run(host=config.HOST, port=config.PORT, debug=False)

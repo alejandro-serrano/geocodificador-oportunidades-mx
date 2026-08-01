@@ -9,8 +9,11 @@ export const CENTRO_MEXICO = [23.6345, -102.5528]
 export const ZOOM_MEXICO = 5
 export const ZOOM_RESULTADO = 17
 
-// Tiles de CARTO Voyager: datos de OpenStreetMap con un estilo limpio y
-// calido. No necesitan token ni cuenta.
+// Tiles de CARTO Voyager: datos de OpenStreetMap con un estilo limpio.
+// De los estilos gratuitos sin token es el mas parecido a Google Maps
+// -calles blancas, parques verdes, agua azul clara-; el estilo exacto de
+// Google es propietario y no se puede reproducir. En index.css se le aplica
+// un ajuste suave de saturacion y brillo para acercarlo un poco mas.
 const TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
 const ATRIBUCION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -23,18 +26,24 @@ const ATRIBUCION =
 // blanco lo despega del mapa.
 function pinAnalizado(nivel, clase, activo) {
   const color = tonos(nivel).pin
-  const d = activo ? 38 : 30
+  const d = activo ? 42 : 34
+  // Gota: redondeada en tres esquinas y en punta en la inferior izquierda,
+  // que al girar 45 grados apunta hacia abajo, hacia la coordenada exacta.
+  const r = Math.round(d * 0.32)
   const html =
-    `<div style="width:${d}px;height:${d}px;border-radius:50%;background:${color};` +
-    `border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);` +
+    `<div style="width:${d}px;height:${d}px;border-radius:${r}px ${r}px ${r}px 3px;` +
+    `background:linear-gradient(135deg,${tonos(nivel).base},${color});transform:rotate(45deg);` +
+    `border:3px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.3);` +
     `display:flex;align-items:center;justify-content:center;` +
-    `opacity:${activo ? 1 : 0.85}">${svgIcono(clase, '#fff', activo ? 19 : 15)}</div>`
+    `opacity:${activo ? 1 : 0.88}">` +
+    `<span style="transform:rotate(-45deg);display:flex">` +
+    `${svgIcono(clase, '#fff', activo ? 20 : 16)}</span></div>`
   return L.divIcon({ html, className: '', iconSize: [d, d], iconAnchor: [d / 2, d / 2] })
 }
 
 // Direccion todavia sin analizar: gris, sin icono de clase, porque aun no
 // sabemos de que tipo es.
-function pinSimple(color, d = 26) {
+function pinSimple(color, d = 28) {
   const html =
     `<div style="width:${d}px;height:${d}px;border-radius:50%;background:${color};` +
     `border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>`
@@ -61,8 +70,8 @@ function Clics({ alHacerClic }) {
 export default function Mapa({
   centro, zoom, seleccion, vecinos, puntoClic, prediccion, historial, alHacerClic,
 }) {
-  const iconoSeleccion = useMemo(() => pinSimple(ACENTO, 30), [])
-  const iconoVecino = useMemo(() => pinSimple(NEUTRO, 22), [])
+  const iconoSeleccion = useMemo(() => pinSimple(ACENTO, 32), [])
+  const iconoVecino = useMemo(() => pinSimple(NEUTRO, 24), [])
 
   // El analisis vigente se dibuja aparte; del historial se omite para no
   // pintarlo dos veces sobre la misma coordenada.
@@ -78,6 +87,12 @@ export default function Mapa({
       scrollWheelZoom
     >
       <TileLayer url={TILES} attribution={ATRIBUCION} />
+      {/* Capa de solo etiquetas por encima de los pines: los nombres de calle
+          siguen leyendose aunque haya marcadores encima, como en Google Maps. */}
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png"
+        pane="shadowPane"
+      />
       <Centrar centro={centro} zoom={zoom} />
       <Clics alHacerClic={alHacerClic} />
 

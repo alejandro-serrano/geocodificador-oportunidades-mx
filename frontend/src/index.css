@@ -1,8 +1,32 @@
+/* Tipografias empaquetadas con la aplicacion. No se piden a ningun servidor
+   externo: vienen de npm y se sirven desde backend/static/ como todo lo demas.
+
+   Sora        titulos y etiquetas: geometrica, con caracter
+   Inter       cuerpo: disenada para interfaces, muy legible
+   IBM Plex    coordenadas: monoespaciada, para que los digitos no bailen */
+@import '@fontsource-variable/sora';
+@import '@fontsource-variable/inter';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
 @import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --font-display: 'Sora Variable', 'Sora', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Radios y sombras: el lenguaje visual de las tarjetas */
+  --r-lg: 20px;
+  --r-md: 14px;
+  --r-sm: 10px;
+  --sombra-sm: 0 1px 2px rgba(23, 35, 63, 0.06);
+  --sombra-md: 0 6px 20px rgba(23, 35, 63, 0.08), 0 2px 6px rgba(23, 35, 63, 0.05);
+}
 
 html,
 body,
@@ -12,5 +36,62 @@ body,
 }
 
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
+  /* Fondo blanco, no gris: las tarjetas se separan por borde y sombra. */
+  background: #ffffff;
+  color: #1e2a45;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  /* Cifras alternativas de Inter que mejoran la lectura de direcciones:
+     una "l" con cola, para no confundirla con "I" mayuscula ni con "1". */
+  font-feature-settings: 'cv05' 1;
+}
+
+@layer components {
+  /* Tarjeta: la unidad de composicion del panel. */
+  .tarjeta {
+    @apply border bg-white;
+    border-color: #e3e8f0;
+    border-radius: var(--r-lg);
+    box-shadow: var(--sombra-sm);
+  }
+
+  .titulo {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  /* Etiqueta de seccion: mayusculas pequenas, muy espaciadas. */
+  .rotulo {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8b96aa;
+  }
+
+  /* Coordenadas: cifras de ancho fijo para que no bailen al cambiar de punto. */
+  .coordenada {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Los popups de Leaflet traen su propia tipografia; se alinean con el resto. */
+.leaflet-container {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--r-md);
+  box-shadow: var(--sombra-md);
+}
+
+/* El mapa lleva un ajuste suave hacia la paleta de Google Maps: algo menos
+   saturado y un punto mas claro que el Voyager original. Es un retoque de
+   presentacion, no cambia los datos. */
+.leaflet-tile-pane {
+  filter: saturate(0.82) brightness(1.04) contrast(0.98);
 }

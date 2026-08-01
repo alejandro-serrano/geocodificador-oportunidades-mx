@@ -95,15 +95,28 @@ def test_mensaje_util_sin_build():
         shutil.rmtree(vacio, ignore_errors=True)
 
 
-def test_ip_local():
-    """La IP que se anuncia para el telefono tiene que ser de red, no loopback."""
-    ip = api.ip_local()
-    if ip is None:
-        print("-- sin red: se omite la comprobacion de IP")
-        return
-    assert ip.count(".") == 3, ip
-    assert not ip.startswith("127."), f"se anuncio {ip}: el telefono no puede usar loopback"
-    print(f"OK ip_local devuelve una direccion de red utilizable: {ip}")
+def test_ips_anunciadas():
+    """Las IP que se anuncian para el telefono tienen que ser de red.
+
+    Se listan TODAS, no solo la de salida: un Mac con Ethernet y Wi-Fi tiene
+    varias y solo una llega al telefono. Anunciar una sola manda al usuario a
+    probar la equivocada.
+    """
+    ip = api.ip_de_salida()
+    if ip is not None:
+        assert ip.count(".") == 3, ip
+        assert not ip.startswith("127."), f"se anuncio {ip}: loopback no sirve"
+        print(f"OK ip_de_salida devuelve una direccion utilizable: {ip}")
+    else:
+        print("-- sin ruta de salida: se omite esa parte")
+
+    ips = api.ips_locales()
+    assert isinstance(ips, list), "debe devolver una lista aunque no haya red"
+    for x in ips:
+        assert not x.startswith(("127.", "169.254.")), f"{x} no sirve para el telefono"
+    if ip is not None:
+        assert ip in ips, "la de salida debe estar entre las listadas"
+    print(f"OK ips_locales devuelve {len(ips)} direccion(es), sin loopback ni link-local")
 
 
 def test_escucha_en_toda_la_red():
@@ -115,7 +128,7 @@ def test_escucha_en_toda_la_red():
 
 if __name__ == "__main__":
     for prueba in [test_rutas_api_ganan_a_los_estaticos, test_sirve_el_frontend_compilado,
-                   test_mensaje_util_sin_build, test_ip_local, test_escucha_en_toda_la_red]:
+                   test_mensaje_util_sin_build, test_ips_anunciadas, test_escucha_en_toda_la_red]:
         print(f"\n── {prueba.__name__}")
         prueba()
     print("\nTODAS LAS PRUEBAS DEL SERVIDOR UNIFICADO PASARON")
